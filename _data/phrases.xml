@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phrases>
+  <phrase title="custom_bb_code_desc.chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[Creates a chart with bars.]]></phrase>
+  <phrase title="custom_bb_code_example.chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[]]></phrase>
+  <phrase title="custom_bb_code_output.chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[]]></phrase>
+  <phrase title="custom_bb_code_title.chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[Chart: Bar]]></phrase>
+</phrases>

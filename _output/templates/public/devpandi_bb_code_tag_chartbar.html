@@ -1,0 +1,29 @@
+<xf:js prod="DevPandi/chart.umd.js" />
+<div>
+	<canvas id="chartbar-{{ $chartID }}"></canvas>
+</div>
+<xf:js>
+var chartBox{{ $chartID }} = document.getElementById('chartbar-{{ $chartID }}');
+var chartData{{ $chartID }} = {
+	labels: [<xf:foreach loop="$parts" value="$part" i="$i"><xf:if is="$i > 1">, </xf:if>"{{ $part }}"</xf:foreach>],
+	datasets: [
+		<xf:foreach loop="$elements" value="$element" i="$j">
+			<xf:if is="$j > 1">, </xf:if>{
+				label: '{{ $element.name }}',
+				backgroundColor: ['{{ $element.color }}'],
+				data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data|number }}</xf:foreach>]
+			}
+		</xf:foreach>
+	]
+};
+var chartOptions{{ $chartID }} = {
+	scales: {
+		y: {
+			<xf:if is="$startAt > 0">min: {{ $startAt|number }}<xf:else />beginAtZero: true</xf:if>
+			<xf:if is="$endAt">,max: {{ $endAt|number }}</xf:if>
+			<xf:if is="$titleY">,title: {display: true, text: '{{ $titleY }}'}</xf:if>
+		}
+	}
+}
+new Chart(chartBox{{ $chartID }}, {type: 'bar', data: chartData{{ $chartID }}, options: chartOptions{{ $chartID }}});
+</xf:js>
