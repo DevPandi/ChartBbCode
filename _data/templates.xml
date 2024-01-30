@@ -1,29 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
-  <template type="public" title="bb_code_tag_chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[<xf:js prod="DevPandi/chart.umd.js" />
-<div>
-	<canvas id="chartbar-{{ $chartID }}"></canvas>
+  <template type="public" title="devpandi_bb_code_chart.less" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[.bbCodeBlock--dpChart {
+	background-color: @xf-contentAltBg;
+	border: 1px solid @xf-borderColorAttention;
+	
+	.bbCodeBlock-content {
+		margin: auto;
+		width: 95%;
+	}
+	
+	.bbCodeBlock-title {
+		font-size: @xf-fontSizeSmall;
+		text-align: center;
+		background-color: @xf-contentAltBg;
+		color: @xf-textColorAttention;
+	}
+}]]></template>
+  <template type="public" title="devpandi_bb_code_tag_chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[<xf:css src="devpandi_bb_code_chart.less" />
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
+	<div class="bbCodeBlock-content" dir="ltr">
+			<canvas id="chartbar-{{ $chartID }}"></canvas>
+	</div>
+	<xf:if is="$chartOptions.title">
+		<div class="bbCodeBlock-title">
+			{{ $chartOptions.title }}
+		</div>
+	</xf:if>
 </div>
+
+<xf:comment>Loads char.js and set dome default values</xf:comment>
+<xf:js prod="DevPandi/chart.umd.js" />
+<xf:js>
+Chart.defaults.font.size = {{ property('fontSizeSmall')|number }};
+Chart.defaults.font.family = "{{ property('fontFamilyUi') }}";
+Chart.defaults.color = "{{ parse_less_color(property('textColor')) }}";
+</xf:js>
+
+<xf:comment>JS code for chart.</xf:comment>
 <xf:js>
 var chartBox{{ $chartID }} = document.getElementById('chartbar-{{ $chartID }}');
 var chartData{{ $chartID }} = {
-	labels: [<xf:foreach loop="$parts" value="$part" i="$i"><xf:if is="$i > 1">, </xf:if>"{{ $part }}"</xf:foreach>],
+	<xf:if is="$chartElements.x">
+		labels: [<xf:foreach loop="$chartElements.x" value="$labelX" i="$i"><xf:if is="$i > 1">, </xf:if>"{{ $labelX }}"</xf:foreach>],
+	</xf:if>
 	datasets: [
-		<xf:foreach loop="$elements" value="$element" i="$j">
-			<xf:if is="$j > 1">, </xf:if>{
-				label: '{{ $element.name }}',
-				backgroundColor: ['{{ $element.color }}'],
-				data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data|number }}</xf:foreach>]
-			}
+		<xf:foreach loop="$chartElements" value="$element" key="$name" i="$j">
+			<xf:if is="$name != 'x'">
+				<xf:if is="$j > 2">, </xf:if>{
+					label: '{{ $name }}',
+					<xf:if is="$element.color">backgroundColor: ['{{ $element.color }}'],</xf:if>
+					<xf:if is="$element.border">borderColor: ['{{ $element.border }}'],</xf:if>
+					borderWidth: 1,
+					data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data|number }}</xf:foreach>]
+				}
+			</xf:if>
 		</xf:foreach>
 	]
 };
 var chartOptions{{ $chartID }} = {
 	scales: {
 		y: {
-			<xf:if is="$startAt > 0">min: {{ $startAt|number }}<xf:else />beginAtZero: true</xf:if>
-			<xf:if is="$endAt">,max: {{ $endAt|number }}</xf:if>
-			<xf:if is="$titleY">,title: {display: true, text: '{{ $titleY }}'}</xf:if>
+			<xf:if is="$chartOptions.startAt > 0">min: {{ $chartOptions.startAt|number }}<xf:else />beginAtZero: true</xf:if>
+			<xf:if is="$chartOptions.endAt">,max: {{ $chartOptions.endAt|number }}</xf:if>
+			<xf:if is="$chartOptions.y.tick == false && $chartOptions.y.str != ''">
+				,title: {display: true, text: '{{ $chartOptions.y.str }}'}
+			<xf:elseif is="$chartOptions.y.tick == true" />
+			 	,ticks: {
+                    callback: function(value, index, ticks) {
+                        return <xf:if is="$chartOptions.y.start">value + '{{ $chartOptions.y.str }}'<xf:else />'{{ $chartOptions.y.str }}' + value</xf:if>;
+                    }
+				}
+			</xf:if>	
 		}
 	}
 }
