@@ -66,6 +66,10 @@ class Chart
                             case 'height':
                             case 'width':
                                 $options[$tag] = (int) $value;
+                                break;
+                            case 'useX':
+                                $options[$tag] = (bool) $value;
+                                break;
                         }
                     }
                 }
