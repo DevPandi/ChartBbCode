@@ -1,6 +1,6 @@
 <xf:css src="devpandi_bb_code_chart.less"  />
 <div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
-	<div class="bbCodeBlock-content">
+	<div class="bbCodeBlock-content" dir="ltr">
 		<canvas id="chartbar-{{ $chartID }}" aria-label="Chart {{ $chartOptions.title }}" role="img"></canvas>
 	</div>
 </div>
@@ -27,7 +27,7 @@
 						label: '{{ $name }}',
 						<xf:if is="$element.color">backgroundColor: ['{{ $element.color }}'],</xf:if>
 						<xf:if is="$element.border">borderColor: ['{{ $element.border }}'],</xf:if>
-						data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data|number }}</xf:foreach>]
+						data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data }}</xf:foreach>]
 					}
 				</xf:if>
 			</xf:foreach>
@@ -55,8 +55,8 @@
 		},
 		scales: {
 			<xf:if is="$chartOptions.useX">x<xf:else />y</xf:if>: {
-				<xf:if is="$chartOptions.startAt > 0">min: {{ $chartOptions.startAt|number }}<xf:else />beginAtZero: true</xf:if>
-				<xf:if is="$chartOptions.endAt">,max: {{ $chartOptions.endAt|number }}</xf:if>	
+				<xf:if is="$chartOptions.startAt > 0">min: {{ $chartOptions.startAt }}<xf:else />beginAtZero: true</xf:if>
+				<xf:if is="$chartOptions.endAt">,max: {{ $chartOptions.endAt }}</xf:if>	
 				<xf:if is="$chartOptions.y.tick == false && $chartOptions.y.str != ''">
 					,title: {display: true, text: '{{ $chartOptions.y.str }}'},
 				<xf:elseif is="$chartOptions.y.tick == true" />
