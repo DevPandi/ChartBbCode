@@ -1,8 +1,7 @@
-<xf:css src="devpandi_bb_code_chart.less" />
-
+<xf:css src="devpandi_bb_code_chart.less"  />
 <div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
-	<div class="bbCodeBlock-content" dir="ltr">
-		<canvas id="chartbar-{{ $chartID }}"></canvas>
+	<div class="bbCodeBlock-content">
+		<canvas id="chartbar-{{ $chartID }}" aria-label="Chart {{ $chartOptions.title }}" role="img"></canvas>
 	</div>
 </div>
 
@@ -59,7 +58,7 @@
 				<xf:if is="$chartOptions.startAt > 0">min: {{ $chartOptions.startAt|number }}<xf:else />beginAtZero: true</xf:if>
 				<xf:if is="$chartOptions.endAt">,max: {{ $chartOptions.endAt|number }}</xf:if>	
 				<xf:if is="$chartOptions.y.tick == false && $chartOptions.y.str != ''">
-					,title: {display: true, text: '{{ $chartOptions.y.str }}'}
+					,title: {display: true, text: '{{ $chartOptions.y.str }}'},
 				<xf:elseif is="$chartOptions.y.tick == true" />
 					,ticks: {
 						callback: function(value, index, ticks) {
