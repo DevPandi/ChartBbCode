@@ -21,7 +21,7 @@ class Chart
         $chartElements = static::parseChart($chartString, $renderer->getTemplater());
 
         // no options for min and max.
-        if (!isset($chartOptions['startAt']) && static::$minValue > 100) {
+        if (!isset($chartOptions['startAt'])) {
             $chartOptions['startAt'] = static::findNumber();
         }
         if (!isset($chartOptions['endAt']) && static::$maxValue) {
@@ -136,12 +136,16 @@ class Chart
 
     protected static function findNumber(bool $start = true): int
     {
-        $modulo = static::findModulo(static::$maxValue);
-        if ($start) {
-            return static::$minValue - ($modulo + static::$minValue % $modulo);
+        if (static::$minValue > 0 && static::$maxValue > 1) {
+            $modulo = static::findModulo(static::$maxValue);
+            if ($start) {
+                return static::$minValue - ($modulo + static::$minValue % $modulo);
+            }
+
+            return static::$maxValue + (2 * $modulo - (static::$maxValue % $modulo));
         }
 
-        return static::$maxValue + (2 * $modulo - (static::$maxValue % $modulo));
+        return ($start) ? 0 : 1;
     }
 
     protected static function findModulo(int $number): int
