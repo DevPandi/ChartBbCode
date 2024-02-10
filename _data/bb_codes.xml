@@ -2,7 +2,7 @@
 <bb_codes>
   <bb_code bb_code_id="chartbar" bb_code_mode="callback" has_option="optional" callback_class="DevPandi\ChartBbCode\BbCode\Chart" callback_method="renderTagBar" trim_lines_after="0" plain_children="1" disable_smilies="1" disable_nl2br="1" disable_autolink="1" allow_empty="0" allow_signature="0" active="1">
     <replace_html><![CDATA[]]></replace_html>
-    <replace_html_email><![CDATA[[chart]]]></replace_html_email>
-    <replace_text><![CDATA[[chart]]]></replace_text>
+    <replace_html_email><![CDATA[]]></replace_html_email>
+    <replace_text><![CDATA[]]></replace_text>
   </bb_code>
 </bb_codes>

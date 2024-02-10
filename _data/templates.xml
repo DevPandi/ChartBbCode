@@ -6,7 +6,7 @@
 	max-width: 80%;
 	margin: 0 auto;
 }]]></template>
-  <template type="public" title="devpandi_bb_code_tag_chartbar" version_id="1000031" version_string="1.0.0 Beta 1"><![CDATA[<xf:css src="devpandi_bb_code_chart.less"  />
+  <template type="public" title="devpandi_bb_code_tag_chartbar" version_id="1000032" version_string="1.0.0 Beta 2"><![CDATA[<xf:css src="devpandi_bb_code_chart.less"  />
 <div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
 	<div class="bbCodeBlock-content" dir="ltr">
 		<canvas id="chartbar-{{ $chartID }}" aria-label="Chart {{ $chartOptions.title }}" role="img"></canvas>
@@ -30,8 +30,10 @@
 		</xf:if>
 		datasets: [
 			<xf:foreach loop="$chartElements" value="$element" key="$name" i="$j">
-				<xf:if is="$name != 'x'">
-					<xf:if is="$j > 2">, </xf:if>{
+				<xf:if is="$name == 'x'">
+					<xf:set var="$j" value="0" />
+				<xf:else />
+					<xf:if is="$j > 1">, </xf:if>{
 						label: '{{ $name }}',
 						<xf:if is="$element.color">backgroundColor: ['{{ $element.color }}'],</xf:if>
 						<xf:if is="$element.border">borderColor: ['{{ $element.border }}'],</xf:if>
