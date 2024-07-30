@@ -4,7 +4,8 @@
   ],
   "rollup": {
     "js/DevPandi/chart.umd.js": ["js/DevPandi/chart.umd.js"],
-    "js/DevPandi/chart.umd.js.map":["js/DevPandi/chart.umd.js.map"]
+    "js/DevPandi/chart.umd.js.map":["js/DevPandi/chart.umd.js.map"],
+    "js/DevPandi"
   },
   "exec": [
     "echo '{title} version {version_string} ({version_id}) has been built successfully!'"

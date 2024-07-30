@@ -1,75 +1,11 @@
 <xf:css src="devpandi_bb_code_chart.less"  />
 <div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
 	<div class="bbCodeBlock-content" dir="ltr">
-		<canvas id="chartbar-{{ $chartID }}" aria-label="Chart {{ $chartOptions.title }}" role="img"></canvas>
+		<canvas id="chart-{{ $chartData.id }}" aria-label="Chart {{ $chartData.title }}" role="img"></canvas>
 	</div>
 </div>
-
-<xf:comment>Loads char.js and set dome default values</xf:comment>
-<xf:js prod="DevPandi/chart.umd.js" />
-<xf:js>
-	Chart.defaults.font.size = {{ property('fontSizeSmall')|number }};
-	Chart.defaults.font.family = "{{ property('fontFamilyUi') }}";
-	Chart.defaults.color = "{{ parse_less_color(property('textColor')) }}";
-</xf:js>
-
-<xf:comment>JS code for chart.</xf:comment>
-<xf:js>
-	var chartBox{{ $chartID }} = document.getElementById('chartbar-{{ $chartID }}');
-	var chartData{{ $chartID }} = {
-		<xf:if is="$chartElements.x">
-			labels: [<xf:foreach loop="$chartElements.x" value="$labelX" i="$i"><xf:if is="$i > 1">, </xf:if>"{{ $labelX }}"</xf:foreach>],
-		</xf:if>
-		datasets: [
-			<xf:foreach loop="$chartElements" value="$element" key="$name" i="$j">
-				<xf:if is="$name == 'x'">
-					<xf:set var="$j" value="0" />
-				<xf:else />
-					<xf:if is="$j > 1">, </xf:if>{
-						label: '{{ $name }}',
-						<xf:if is="$element.color">backgroundColor: ['{{ $element.color }}'],</xf:if>
-						<xf:if is="$element.border">borderColor: ['{{ $element.border }}'],</xf:if>
-						data: [<xf:foreach loop="$element.data" value="$data" i="$k"><xf:if is="$k > 1">, </xf:if> {{ $data }}</xf:foreach>]
-					}
-				</xf:if>
-			</xf:foreach>
-		]
-	};
-	var chartOptions{{ $chartID }} = {
-		<xf:if is="$chartOptions.useX">indexAxis: 'y',</xf:if>
-		plugins: {
-			legend: {
-				position: 'bottom',
-			}
-			<xf:if is="$chartOptions.title">
-				,title: {
-					display: true,
-					text: '{{ $chartOptions.title }}',
-					color: '{{ parse_less_color(property('textColorAttention')) }}'
-				}
-			</xf:if>
-		},
-		responsive: true,
-		elements: {
-			bar: {
-				borderWidth: 2
-			}
-		},
-		scales: {
-			<xf:if is="$chartOptions.useX">x<xf:else />y</xf:if>: {
-				<xf:if is="$chartOptions.startAt > 0">min: {{ $chartOptions.startAt }}<xf:else />beginAtZero: true</xf:if>
-				<xf:if is="$chartOptions.endAt">,max: {{ $chartOptions.endAt }}</xf:if>	
-				<xf:if is="$chartOptions.y.tick == false && $chartOptions.y.str != ''">
-					,title: {display: true, text: '{{ $chartOptions.y.str }}'},
-				<xf:elseif is="$chartOptions.y.tick == true" />
-					,ticks: {
-						callback: function(value, index, ticks) {
-							return <xf:if is="$chartOptions.y.start">value + '{{ $chartOptions.y.str }}'<xf:else />'{{ $chartOptions.y.str }}' + value</xf:if>;
-						}
-					}
-				</xf:if>
-			}
-		}
-	}
-	new Chart(chartBox{{ $chartID }}, {type: 'bar', data: chartData{{ $chartID }}, options: chartOptions{{ $chartID }}});
-</xf:js>
+<script type="text/json" name="chartBbcodeData">
+	{{ $chartData|json|raw }}
+</script>
+<xf:js src="DevPandi/chart.umd.js"  />
+<xf:js src="DevPandi/ChartBbCode.js"  />

@@ -14,24 +14,25 @@ class Chart
         // reset static value
         static::$minValue = static::$maxValue = null;
 
-        // parse options and tag
+        // prepare chart string
         $optionsString = static::unifyLines($tagOption);
         $chartString = static::unifyLines($tagChildren[0]);
-        $chartOptions = static::parseOptions($optionsString, $renderer->getTemplater());
-        $chartElements = static::parseChart($chartString, $renderer->getTemplater());
+
+        //Build Chart Data
+        $chartData = static::parseOptions($optionsString, $renderer->getTemplater());
+        $chartData['id'] = substr(sha1(rand()), 0, 15);
+        $chartData['data'] = static::parseChart($chartString, $renderer->getTemplater());
 
         // no options for min and max.
         if (!isset($chartOptions['startAt'])) {
-            $chartOptions['startAt'] = static::findNumber();
+            $chartData['startAt'] = static::findNumber();
         }
         if (!isset($chartOptions['endAt']) && static::$maxValue) {
-            $chartOptions['endAt'] = static::findNumber(false);
+            $chartData['endAt'] = static::findNumber(false);
         }
 
         return $renderer->getTemplater()->renderTemplate('public:devpandi_bb_code_tag_chartbar', [
-            'chartID' => substr(sha1(rand()), 0, 15),
-            'chartOptions' => $chartOptions,
-            'chartElements' => $chartElements,
+            'chartData' => $chartData,
         ]);
     }
 
@@ -81,47 +82,51 @@ class Chart
 
     protected static function parseChart(string $chartString, Templater $templater): array
     {
+        $labels = [];
         $elements = [];
-        $elementName = '';
-        $x = 1;
         $lines = explode("\n", $chartString);
         foreach ($lines as $lineNo => $line) {
             if (str_starts_with($line, 'x:')) {
-                $elements['x'] = explode(';', substr($line, 2));
-                $x = count($elements['x']);
+                $labels = explode(';', substr($line, 2));
                 continue;
             }
 
             $rawElement = explode(';', $line);
+            $element = [];
             foreach ($rawElement as $index => $value) {
                 $value = static::trim($value, $templater);
                 if ($index === 0) {
-                    $elements[$value] = [];
-                    $elementName = $value;
+                    $element = [];
+                    $element['name'] = $value;
                     continue;
                 }
 
-                if (empty($elementName)) {
+                if (empty($element['name'])) {
                     break;
                 }
 
                 if (str_starts_with($value, 'color:')) {
-                    $elements[$elementName]['color'] = static::trim(str_replace('color:', '', $value), $templater);
+                    $element['color'] = static::trim(str_replace('color:', '', $value), $templater);
                     continue;
                 }
 
                 if (str_starts_with($value, 'border:')) {
-                    $elements[$elementName]['border'] = static::trim(str_replace('border:', '', $value), $templater);
+                    $element['border'] = static::trim(str_replace('border:', '', $value), $templater);
                     continue;
                 }
 
                 static::$maxValue = (static::$maxValue === null || static::$maxValue < (int) $value) ? (int) $value : static::$maxValue;
                 static::$minValue = (static::$minValue === null || static::$minValue > (int) $value) ? (int) $value : static::$minValue;
-                $elements[$elementName]['data'][] = $value;
+                $element['data'][] = $value;
+            }
+
+            if (!empty($element)) {
+                $elements[] = $element;
             }
         }
 
-        return $elements;
+
+        return ['labels' => $labels, 'elements' => $elements];
     }
 
     protected static function unifyLines(string $string): string
