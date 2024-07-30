@@ -12,7 +12,7 @@
 		<canvas id="chart-{{ $chartData.id }}" aria-label="Chart {{ $chartData.title }}" role="img"></canvas>
 	</div>
 </div>
-<script type="text/json" name="chartBbcodeData">
+<script type="application/json" class="chartBbcodeData">
 	{{ $chartData|json|raw }}
 </script>
 <xf:js src="DevPandi/chart.umd.js"  />
