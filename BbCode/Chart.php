@@ -9,6 +9,7 @@ class Chart
     protected static bool $escape = false;
     protected static ?int $minValue = null;
     protected static ?int $maxValue = null;
+
     public static function renderTagBar($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
     {
         // reset static value
@@ -19,16 +20,19 @@ class Chart
         $chartString = static::unifyLines($tagChildren[0]);
 
         //Build Chart Data
-        $chartData = static::parseOptions($optionsString, $renderer->getTemplater());
+        $chartData = array_merge(
+            static::parseOptions($optionsString, $renderer->getTemplater()),
+            static::parseChart($chartString, $renderer->getTemplater())
+        );
         $chartData['id'] = substr(sha1(rand()), 0, 15);
-        $chartData['data'] = static::parseChart($chartString, $renderer->getTemplater());
+        $chartData['type'] = 'bar';
 
         // no options for min and max.
-        if (!isset($chartOptions['startAt'])) {
-            $chartData['startAt'] = static::findNumber();
+        if (!isset($chartOptions['min'])) {
+            $chartData['min'] = static::findNumber();
         }
-        if (!isset($chartOptions['endAt']) && static::$maxValue) {
-            $chartData['endAt'] = static::findNumber(false);
+        if (!isset($chartOptions['max']) && static::$maxValue) {
+            $chartData['max'] = static::findNumber(false);
         }
 
         return $renderer->getTemplater()->renderTemplate('public:devpandi_bb_code_tag_chartbar', [
@@ -51,8 +55,8 @@ class Chart
                     if ($tag !== '' && $value !== '') {
                         switch ($tag) {
                             case 'title':
-                            case 'startAt':
-                            case 'endAt':
+                            case 'min':
+                            case 'max':
                                 $options[$tag] = $value;
                                 break;
                             case 'y':
@@ -126,7 +130,7 @@ class Chart
         }
 
 
-        return ['labels' => $labels, 'elements' => $elements];
+        return ['x' => $labels, 'y' => $elements];
     }
 
     protected static function unifyLines(string $string): string

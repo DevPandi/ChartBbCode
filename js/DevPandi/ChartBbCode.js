@@ -1,46 +1,5 @@
 ((window, document) => {
-    var DevPandiChartBbCode = {
-        renderedCharts: [],
-        loadCharts: function () {
-            var charts = document.getElementsByName('chartBbcodeData');
-            if (charts.length > 0) {
-                charts.forEach(this.prepareChart(element);
-            }
-        },
 
-        prepareChart: function(element) {
-            var chart = JSON.parse(element);
-            chartData = this.parseData(element.data);
-        },
-
-        parseData: function(rawData) {
-            var chartData = this.defaultDataObject();
-            if (rawData.labels) {
-                chartData.labels = rawData.labels;
-            }
-
-            var datasets = [];
-            if (rawData.elements.length > 0) {
-                rawData.elements.forEach(function(element) {
-                        var dataset = {};
-                        dataset.label = data.name;
-                        if (data.color) {
-                            dataset.backgroundColor = [data.color];
-                        }
-                        if (data.border) {
-                            dataset.borderColor = [data.border];
-                        }
-                        dataset.data = data.data;
-                    }
-                )
-            }
-
-        }
-
-        defaultDataObject: function() {
-            return { labels: [], data: [] };
-        }
-    }
 
     var charts = document.getElementsByName('chartBbcodeData');
     for (i = 0; i < charts.length; i++) {
@@ -48,12 +7,12 @@
         console.log(chart);
         // create chart data
         var chartData = {};
-        if (chart.data.labels) {
-            chartData.labels = chart.data.labels;
+        if (chart.x) {
+            chartData.labels = chart.x;
         }
         var datasets = [];
-        for (j = 0; j < chart.data.elements.length; j++) {
-            var element =  chart.data.elements[j];
+        for (j = 0; j < chart.y.elements.length; j++) {
+            var element =  chart.y.elements[j];
             var dataset = {};
             dataset.label = element.name;
             if (element.color) {
