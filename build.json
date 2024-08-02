@@ -2,16 +2,9 @@
   "additional_files": [
     "js/DevPandi/"
   ],
-  "minify": [
-    "js/DevPandi/chart.umd.js",
-    "js/DevPandi/ChartBbCode.js"
-  ],
   "rollup": {
-    "js/DevPandi/chart.umd.js": ["js/DevPandi/chart.umd.min.js"],
+    "js/DevPandi/chart.umd.js": ["js/DevPandi/chart.umd.js"],
     "js/DevPandi/chart.umd.js.map":["js/DevPandi/chart.umd.js.map"],
-    "js/DevPandi/ChartBbCode.js": ["js/DevPandi/ChartBbCode.min,js"]
-  },
-  "exec": [
-    "echo '{title} version {version_string} ({version_id}) has been built successfully!'"
-  ]
+    "js/DevPandi/ChartBbCode.js": ["js/DevPandi/ChartBbCode.js"]
+  }
 }

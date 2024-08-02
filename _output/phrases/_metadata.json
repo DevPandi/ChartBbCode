@@ -5,10 +5,22 @@
         "version_string": "1.0.0 Beta 1",
         "hash": "650e19623261a13b955341865d5b5646"
     },
+    "custom_bb_code_desc.chartline.txt": {
+        "global_cache": false,
+        "version_id": 1000033,
+        "version_string": "1.0.0 Beta 3",
+        "hash": "8e5d3ad147f703502a2a87ad8e7a534d"
+    },
     "custom_bb_code_example.chartbar.txt": {
         "global_cache": false,
         "version_id": 1000031,
         "version_string": "1.0.0 Beta 1",
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "custom_bb_code_example.chartline.txt": {
+        "global_cache": false,
+        "version_id": 1000033,
+        "version_string": "1.0.0 Beta 3",
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "custom_bb_code_output.chartbar.txt": {
@@ -17,10 +29,22 @@
         "version_string": "1.0.0 Beta 1",
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
+    "custom_bb_code_output.chartline.txt": {
+        "global_cache": false,
+        "version_id": 1000033,
+        "version_string": "1.0.0 Beta 3",
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
     "custom_bb_code_title.chartbar.txt": {
         "global_cache": false,
         "version_id": 1000031,
         "version_string": "1.0.0 Beta 1",
         "hash": "921bf9e0657b58dfa52943ac9eeeb66c"
+    },
+    "custom_bb_code_title.chartline.txt": {
+        "global_cache": false,
+        "version_id": 1000033,
+        "version_string": "1.0.0 Beta 3",
+        "hash": "ddcbb65ce95e582c31fbaedec41f8bda"
     }
 }

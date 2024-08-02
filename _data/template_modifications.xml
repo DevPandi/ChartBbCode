@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<template_modifications/>
+<template_modifications>
+  <modification type="public" template="helper_js_global" modification_key="DEVPANDI_CHARTBBCODE_JS" description="Add JS files for Chartbbcode." execution_order="10" enabled="1" action="str_replace">
+    <find><![CDATA[<!--XF:JS-->]]></find>
+    <replace><![CDATA[<xf:js prod="DevPandi/chart.umd.js" dev="../src/addons/DevPandi/ChartBbCode/js/chart.umd.js" />
+<xf:js prod="DevPandi/ChartBbCode.js" dev="../src/addons/DevPandi/ChartBbCode/js/ChartBbCode.js" />
+<!--XF:JS-->]]></replace>
+  </modification>
+</template_modifications>

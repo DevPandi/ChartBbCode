@@ -2,17 +2,50 @@
 
 namespace DevPandi\ChartBbCode\BbCode;
 
-use XF\Template\Templater;
+use \XF\BbCode\Renderer\AbstractRenderer;
 
 class Chart
 {
+    protected static Abstractrenderer $renderer;
     protected static bool $escape = false;
     protected static ?int $minValue = null;
     protected static ?int $maxValue = null;
+    protected static array $supportedOptions = [
+        'bar' => [
+            'title',
+            'min',
+            'max',
+            'y',
+            'height',
+            'width',
+            'useX',
+        ],
+        'line' => [
+            'title',
+            'min',
+            'max',
+            'y',
+            'x',
+            'height',
+            'width'
+        ]
+    ];
 
-    public static function renderTagBar($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
+    public static function renderBarTag($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
     {
-        // reset static value
+        static::$renderer = $renderer;
+        return static::renderTag($tagChildren, $tagOption, $tag, $options, 'bar');
+    }
+
+    public static function renderLineTag($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
+    {
+        static::$renderer = $renderer;
+        return static::renderTag($tagChildren, $tagOption, $tag, $options, 'line');
+    }
+
+    protected static function renderTag($tagChildren, $tagOption, $tag, array $options, $type)
+    {
+        // set defaults
         static::$minValue = static::$maxValue = null;
 
         // prepare chart string
@@ -21,11 +54,11 @@ class Chart
 
         //Build Chart Data
         $chartData = array_merge(
-            static::parseOptions($optionsString, $renderer->getTemplater()),
-            static::parseChart($chartString, $renderer->getTemplater())
+            static::parseOptions($optionsString),
+            static::parseChart($chartString)
         );
         $chartData['id'] = substr(sha1(rand()), 0, 15);
-        $chartData['type'] = 'bar';
+        $chartData['type'] = $type;
 
         // no options for min and max.
         if (!isset($chartOptions['min'])) {
@@ -35,12 +68,12 @@ class Chart
             $chartData['max'] = static::findNumber(false);
         }
 
-        return $renderer->getTemplater()->renderTemplate('public:devpandi_bb_code_tag_chartbar', [
+        return static::$renderer->getTemplater()->renderTemplate('public:devpandi_bb_code_tag_chart', [
             'chartData' => $chartData,
         ]);
     }
 
-    protected static function parseOptions(string $optionsString, Templater $templater): array
+    protected static function parseOptions(string $optionsString): array
     {
         $options = [];
         if (!empty($optionsString)) {
@@ -49,8 +82,8 @@ class Chart
             foreach ($rawOptions as $optionString) {
                 if (strpos($optionString, ':')) {
                     $rawOption = explode(':', $optionString);
-                    $tag = static::trim($rawOption[0], $templater) ?? '';
-                    $value = static::trim($rawOption[1], $templater) ?? '';
+                    $tag = static::trim($rawOption[0]) ?? '';
+                    $value = static::trim($rawOption[1]) ?? '';
 
                     if ($tag !== '' && $value !== '') {
                         switch ($tag) {
@@ -61,12 +94,15 @@ class Chart
                                 break;
                             case 'y':
                                 if (str_starts_with($value, '#')) {
-                                    $options[$tag] = ['tick' => true, 'str' => str_replace('#', '', $value), 'start' => true];
+                                    $options['y_axis'] = ['tick' => true, 'str' => str_replace('#', '', $value), 'start' => true];
                                 } elseif (str_ends_with($value, '#')) {
-                                    $options[$tag] = ['tick' => true, 'str' => str_replace('#', '', $value), 'start' => false];
+                                    $options['y_axis'] = ['tick' => true, 'str' => str_replace('#', '', $value), 'start' => false];
                                 } else {
-                                    $options[$tag] = ['tick' => false, 'str' => $value];
+                                    $options['y_axis'] = ['tick' => false, 'str' => $value];
                                 }
+                                break;
+                            case 'x':
+                                $options['x_axis'] = $value;
                                 break;
                             case 'height':
                             case 'width':
@@ -84,7 +120,7 @@ class Chart
         return $options;
     }
 
-    protected static function parseChart(string $chartString, Templater $templater): array
+    protected static function parseChart(string $chartString): array
     {
         $labels = [];
         $elements = [];
@@ -98,7 +134,7 @@ class Chart
             $rawElement = explode(';', $line);
             $element = [];
             foreach ($rawElement as $index => $value) {
-                $value = static::trim($value, $templater);
+                $value = static::trim($value);
                 if ($index === 0) {
                     $element = [];
                     $element['name'] = $value;
@@ -110,12 +146,22 @@ class Chart
                 }
 
                 if (str_starts_with($value, 'color:')) {
-                    $element['color'] = static::trim(str_replace('color:', '', $value), $templater);
+                    $element['color'] = static::trim(str_replace('color:', '', $value));
                     continue;
                 }
 
                 if (str_starts_with($value, 'border:')) {
-                    $element['border'] = static::trim(str_replace('border:', '', $value), $templater);
+                    $element['border'] = static::trim(str_replace('border:', '', $value));
+                    continue;
+                }
+
+                if ($value == 'dashed') {
+                    $element['dashed'] = true;
+                    continue;
+                }
+
+                if (str_starts_with($value, 'point:')) {
+                    $element['point'] = static::parsePoint(str_replace('point:', '', $value));
                     continue;
                 }
 
@@ -133,14 +179,38 @@ class Chart
         return ['x' => $labels, 'y' => $elements];
     }
 
+    protected static function parsePoint(string $value): array
+    {
+        list($point, $size) = explode(',', $value);
+        echo $size;
+
+        $point = match ($point) {
+            'cross' => 'cross',
+            'crossRot' => 'crossRot',
+            'dash' => 'dash',
+            'line' => 'line',
+            'rect' => 'rect',
+            'rectRounded' => 'rectRounded',
+            'rectRot' => 'rectRot',
+            'star' => 'star',
+            'triangle' => 'triangle',
+            default => 'circle',
+        };
+
+        $size = (int) $size;
+        $size = ($size < 10) ? 10 : $size;
+
+        return ['style' => $point, 'size' => $size];
+    }
+
     protected static function unifyLines(string $string): string
     {
         return str_replace(["\r\n", "\r"], "\n", $string);
     }
 
-    protected static function trim(string $string, Templater $templater): string
+    protected static function trim(string $string): string
     {
-        return $templater->fnTrim($templater, static::$escape, $string);
+        return static::$renderer->getTemplater()->fnTrim(static::$renderer->getTemplater(), static::$escape, $string);
     }
 
     protected static function findNumber(bool $start = true): int

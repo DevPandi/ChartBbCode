@@ -5,7 +5,7 @@
     "replace_html_email": "",
     "replace_text": "",
     "callback_class": "DevPandi\\ChartBbCode\\BbCode\\Chart",
-    "callback_method": "renderBarTag",
+    "callback_method": "renderLineTag",
     "option_regex": "",
     "trim_lines_after": 0,
     "plain_children": true,
