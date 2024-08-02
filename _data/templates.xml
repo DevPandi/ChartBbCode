@@ -6,7 +6,7 @@
 	max-width: 80%;
 	margin: 0 auto;
 }]]></template>
-  <template type="public" title="devpandi_bb_code_tag_chartbar" version_id="1000032" version_string="1.0.0 Beta 2"><![CDATA[<xf:css src="devpandi_bb_code_chart.less"  />
+  <template type="public" title="devpandi_bb_code_tag_chart" version_id="1000033" version_string="1.0.0 Beta 3"><![CDATA[<xf:css src="devpandi_bb_code_chart.less"  />
 <div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--dpChart">
 	<div class="bbCodeBlock-content" dir="ltr">
 		<canvas id="chart-{{ $chartData.id }}" aria-label="Chart {{ $chartData.title }}" role="img"></canvas>
