@@ -28,7 +28,12 @@ class Chart
             'x',
             'height',
             'width'
-        ]
+        ],
+        'pie' => [
+            'title',
+            'height',
+            'width'
+        ],
     ];
 
     public static function renderBarTag($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
@@ -43,6 +48,12 @@ class Chart
         return static::renderTag($tagChildren, $tagOption, $tag, $options, 'line');
     }
 
+    public static function renderPieTag($tagChildren, $tagOption, $tag, array $options, \XF\BbCode\Renderer\AbstractRenderer $renderer)
+    {
+        static::$renderer = $renderer;
+        return static::renderTag($tagChildren, $tagOption, $tag, $options, 'pie');
+    }
+
     protected static function renderTag($tagChildren, $tagOption, $tag, array $options, $type)
     {
         // set defaults
@@ -55,7 +66,7 @@ class Chart
         //Build Chart Data
         $chartData = array_merge(
             static::parseOptions($optionsString),
-            static::parseChart($chartString)
+            static::parseData($chartString, $type)
         );
         $chartData['id'] = substr(sha1(rand()), 0, 15);
         $chartData['type'] = $type;
@@ -120,11 +131,31 @@ class Chart
         return $options;
     }
 
-    protected static function parseChart(string $chartString): array
+    protected static function parseData(string $chartString, string $type): array
     {
         $labels = [];
         $elements = [];
         $lines = explode("\n", $chartString);
+
+        if ($type == 'pie') {
+            $elements = ['color' => [], 'data' => []];
+            foreach ($lines as $line) {
+                $rawElement = explode(';', $line);
+                foreach ($rawElement as $index => $value) {
+                    $value = static::trim($value);
+                    if ($index === 0) {
+                        $labels[] = $value;
+                    } elseif (str_starts_with($value, 'color:')) {
+                        $elements['color'][] = static::trim(str_replace('color:', '', $value));
+                    } else {
+                        $elements['data'][] = $value;
+                    }
+                }
+            }
+
+            return ['labels' => $labels, 'elements' => $elements];
+        }
+
         foreach ($lines as $lineNo => $line) {
             if (str_starts_with($line, 'x:')) {
                 $labels = explode(';', substr($line, 2));
