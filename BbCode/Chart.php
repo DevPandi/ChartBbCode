@@ -2,7 +2,7 @@
 
 namespace DevPandi\ChartBbCode\BbCode;
 
-use \XF\BbCode\Renderer\AbstractRenderer;
+use XF\BbCode\Renderer\AbstractRenderer;
 
 class Chart
 {
@@ -133,29 +133,39 @@ class Chart
 
     protected static function parseData(string $chartString, string $type): array
     {
-        $labels = [];
-        $elements = [];
         $lines = explode("\n", $chartString);
 
         if ($type == 'pie') {
-            $elements = ['color' => [], 'data' => []];
-            foreach ($lines as $line) {
-                $rawElement = explode(';', $line);
-                foreach ($rawElement as $index => $value) {
-                    $value = static::trim($value);
-                    if ($index === 0) {
-                        $labels[] = $value;
-                    } elseif (str_starts_with($value, 'color:')) {
-                        $elements['color'][] = static::trim(str_replace('color:', '', $value));
-                    } else {
-                        $elements['data'][] = $value;
-                    }
+            return static::parsePieData($lines);
+        } else {
+            return static::parseLineOrBarData($lines);
+        }
+    }
+
+    protected static function parsePieData(array $lines): array
+    {
+        $elements = ['color' => [], 'data' => []];
+        $labels = [];
+        foreach ($lines as $line) {
+            $rawElement = explode(';', $line);
+            foreach ($rawElement as $index => $value) {
+                $value = static::trim($value);
+                if ($index === 0) {
+                    $labels[] = $value;
+                } elseif (str_starts_with($value, 'color:')) {
+                    $elements['color'][] = static::trim(str_replace('color:', '', $value));
+                } else {
+                    $elements['data'][] = $value;
                 }
             }
-
-            return ['labels' => $labels, 'elements' => $elements];
         }
 
+        return ['labels' => $labels, 'elements' => $elements];
+    }
+
+    protected static function parseLineOrBarData(array $lines): array
+    {
+        $elements = $labels = [];
         foreach ($lines as $lineNo => $line) {
             if (str_starts_with($line, 'x:')) {
                 $labels = explode(';', substr($line, 2));

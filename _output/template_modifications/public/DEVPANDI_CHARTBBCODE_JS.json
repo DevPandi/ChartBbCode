@@ -5,5 +5,5 @@
     "enabled": true,
     "action": "str_replace",
     "find": "<!--XF:JS-->",
-    "replace": "<xf:js src=\"DevPandi/chart.umd.js\"  />\n<xf:js src=\"DevPandi/ChartBbCode.js\"  />\n<!--XF:JS-->"
+    "replace": "<xf:js src=\"DevPandi/chart.umd.js\"  />\n<xf:js prod=\"DevPandi/ChartBbCode.min.js\" dev=\"DevPandi/ChartBbCode.js\" />\n<!--XF:JS-->"
 }

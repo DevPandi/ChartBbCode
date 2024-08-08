@@ -5,6 +5,7 @@
   "rollup": {
     "js/DevPandi/chart.umd.js": ["js/DevPandi/chart.umd.js"],
     "js/DevPandi/chart.umd.js.map":["js/DevPandi/chart.umd.js.map"],
-    "js/DevPandi/ChartBbCode.js": ["js/DevPandi/ChartBbCode.js"]
+    "js/DevPandi/ChartBbCode.js": ["js/DevPandi/ChartBbCode.js"],
+    "js/DevPandi/ChartBbCode.min.js": ["js/DevPandi/ChartBbCode.min.js"]
   }
 }

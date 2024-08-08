@@ -3,7 +3,8 @@
     XF.DevPandi = XF.DevPandi || {};
 
     class ChartType {
-        constructor(chartData, id) {
+        constructor(chartData, id)
+        {
             this.chartData = chartData;
             this.id = this.chartData.id;
             this.type = this.chartData.type;
@@ -12,22 +13,25 @@
             this._readData();
         }
 
-        _readOptions() {
+        _readOptions()
+        {
             this.options = this._getDefaultOptions();
             if (this.chartData.title) {
                 this.options.plugins.title = { display: true, text: this.chartData.title};
             }
         }
 
-        _readData() {
+        _readData()
+        {
             this.data = { labels: this._readXElements(), datasets: this._readYElements() };
 
         }
 
-        _readYElements() {
-            var datasets = [];
-            var i = 0;
-            var readElement = this._readYElement;
+        _readYElements()
+        {
+            let datasets = [];
+            let i = 0;
+            let readElement = this._readYElement;
             this.chartData.y.forEach(function (element) {
                 datasets[i] = readElement(element);
                 i++;
@@ -36,8 +40,9 @@
             return datasets;
         }
 
-        _readYElement(element) {
-            var dataset = {};
+        _readYElement(element)
+        {
+            let dataset = {};
             dataset.label = element.name;
 
             if (element.color) {
@@ -52,7 +57,8 @@
             return dataset;
         }
 
-        _readXElements() {
+        _readXElements()
+        {
             if (this.chartData.x) {
                 return this.chartData.x;
             } else {
@@ -60,7 +66,8 @@
             }
         }
 
-        _getDefaultOptions() {
+        _getDefaultOptions()
+        {
             return {
                 plugins: { legend: { position: 'bottom' } },
                 responsive: true,
@@ -72,7 +79,8 @@
     }
 
     class ChartBar extends ChartType {
-        _readOptions() {
+        _readOptions()
+        {
             super._readOptions();
 
             this.options.scales = {};
@@ -84,8 +92,9 @@
             }
         }
 
-        _readOptionsAxis() {
-            var axis = {};
+        _readOptionsAxis()
+        {
+            let axis = {};
 
             if (this.chartData.min > 0) {
                 axis.min = this.chartData.min;
@@ -100,13 +109,12 @@
                 axis.title = { display: true, text: this.chartData.y_axis.str };
             } else {
                 axis.ticks = {};
-                var text = this.chartData.y_axis.str
+                let text = this.chartData.y_axis.str
                 if (this.chartData.y_axis.start) {
                     axis.ticks.callback = function (value, index, ticks) {
                         return value + text;
                     }
-                }
-                else {
+                } else {
                     axis.ticks.callback = function (value, index, ticks) {
                         return text + value;
                     }
@@ -118,8 +126,9 @@
     }
 
     class ChartLine extends ChartType {
-        _readYElement(element) {
-            var dataset = super._readYElement(element);
+        _readYElement(element)
+        {
+            let dataset = super._readYElement(element);
 
             if (element.dashed) {
                 dataset.borderDash = [5,5];
@@ -138,7 +147,8 @@
             return dataset;
         }
 
-        _readOptions() {
+        _readOptions()
+        {
             super._readOptions();
 
             this.options.scales = {};
@@ -149,8 +159,9 @@
             }
         }
 
-        _readOptionsAxis() {
-            var axis = {};
+        _readOptionsAxis()
+        {
+            let axis = {};
 
             if (this.chartData.min > 0) {
                 axis.min = this.chartData.min;
@@ -165,13 +176,12 @@
                 axis.title = { display: true, text: this.chartData.y_axis.str };
             } else {
                 axis.ticks = {};
-                var text = this.chartData.y_axis.str
+                let text = this.chartData.y_axis.str
                 if (this.chartData.y_axis.start) {
                     axis.ticks.callback = function (value, index, ticks) {
                         return value + text;
                     }
-                }
-                else {
+                } else {
                     axis.ticks.callback = function (value, index, ticks) {
                         return text + value;
                     }
@@ -183,18 +193,21 @@
     }
 
     class ChartPie extends ChartType {
-        _readData() {
+        _readData()
+        {
             this.data = { labels: this.chartData.labels, datasets: [] };
             this.data.datasets[0] = { data: this.chartData.elements.data, backgroundColor: this.chartData.elements.color, borderColor: ['transparent'] }
         }
     }
 
     class ChartBbCode {
-        constructor() {
+        constructor()
+        {
             this.charts = [];
         }
 
-        getChart(chartData) {
+        getChart(chartData)
+        {
             switch (chartData.type) {
                 case 'bar': return new ChartBar(chartData);
                 case 'line': return new ChartLine(chartData);
@@ -202,21 +215,22 @@
             }
         }
 
-        renderCharts() {
-            var rawCharts = document.getElementsByClassName('chartBbcodeData');
+        renderCharts()
+        {
+            let rawCharts = document.getElementsByClassName('chartBbcodeData');
             for (var i = 0; i < rawCharts.length; i++) {
                 this.renderChart(JSON.parse(rawCharts[i].textContent));
             }
         }
 
-        renderChart(rawChart) {
+        renderChart(rawChart)
+        {
             if (this.charts[rawChart.id]) {
                 return;
-
             }
-            var chart = this.getChart(rawChart)
+            let chart = this.getChart(rawChart)
 
-            if (chart == false) {
+            if (!chart) {
                 return;
             }
             this.charts[chart.id] = chart;
@@ -233,8 +247,7 @@
             "afterSubmit": "_afterSubmitExtension"
         },
 
-        afterSubmit: function(e, data)
-        {
+        afterSubmit: function(e, data) {
             this._afterSubmitExtension(e, data);
 
             XF.DevPandi.ChartBbCode.renderCharts();
@@ -246,8 +259,7 @@
             "editSubmit": "_editSubmit"
         },
 
-        editSubmit: function(e)
-        {
+        editSubmit: function(e) {
             this._editSubmit(e);
 
             XF.DevPandi.ChartBbCode.renderCharts();
@@ -259,8 +271,7 @@
             "loaded": "_loaded"
         },
 
-        loaded: function(data)
-        {
+        loaded: function(data) {
             this._loaded(data);
 
             XF.DevPandi.ChartBbCode.renderCharts();

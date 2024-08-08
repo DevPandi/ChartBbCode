@@ -2,8 +2,8 @@
     "legacy_addon_id": "DevPandi/ChartBbCode",
     "title": "[DevPandi]Chart BbCode",
     "description": "",
-    "version_id": 1000033,
-    "version_string": "1.0.0 Beta 3",
+    "version_id": 1000034,
+    "version_string": "1.0.0 Beta 4",
     "dev": "DevPandi",
     "dev_url": "https://www.pandi.dev",
     "faq_url": "",
@@ -15,5 +15,5 @@
             "PHP 8.2.0+"
         ]
     },
-    "icon": ""
+    "icon": "fa-chart-area"
 }
