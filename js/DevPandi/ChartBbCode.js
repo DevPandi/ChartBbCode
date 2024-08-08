@@ -247,7 +247,8 @@
             "afterSubmit": "_afterSubmitExtension"
         },
 
-        afterSubmit: function(e, data) {
+        afterSubmit: function(e, data)
+        {
             this._afterSubmitExtension(e, data);
 
             XF.DevPandi.ChartBbCode.renderCharts();
@@ -259,7 +260,8 @@
             "editSubmit": "_editSubmit"
         },
 
-        editSubmit: function(e) {
+        editSubmit: function(e)
+        {
             this._editSubmit(e);
 
             XF.DevPandi.ChartBbCode.renderCharts();
@@ -271,7 +273,8 @@
             "loaded": "_loaded"
         },
 
-        loaded: function(data) {
+        loaded: function(data)
+        {
             this._loaded(data);
 
             XF.DevPandi.ChartBbCode.renderCharts();
