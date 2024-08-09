@@ -6,7 +6,7 @@ use XF\BbCode\Renderer\AbstractRenderer;
 
 class Chart
 {
-    protected static Abstractrenderer $renderer;
+    protected static AbstractRenderer $renderer;
     protected static bool $escape = false;
     protected static ?int $minValue = null;
     protected static ?int $maxValue = null;
@@ -174,6 +174,7 @@ class Chart
 
             $rawElement = explode(';', $line);
             $element = [];
+            $prevValue = null;
             foreach ($rawElement as $index => $value) {
                 $value = static::trim($value);
                 if ($index === 0) {
@@ -208,6 +209,7 @@ class Chart
 
                 static::$maxValue = (static::$maxValue === null || static::$maxValue < (int) $value) ? (int) $value : static::$maxValue;
                 static::$minValue = (static::$minValue === null || static::$minValue > (int) $value) ? (int) $value : static::$minValue;
+
                 $element['data'][] = $value;
             }
 
@@ -256,27 +258,21 @@ class Chart
 
     protected static function findNumber(bool $start = true): int
     {
-        if (static::$minValue > 0 && static::$maxValue > 1) {
-            $modulo = static::findModulo(static::$maxValue);
-            if ($start) {
-                return static::$minValue - ($modulo + static::$minValue % $modulo);
-            }
-
-            return static::$maxValue + (2 * $modulo - (static::$maxValue % $modulo));
+        if ($start) {
+            return static::$minValue - static::$minValue % static::findModulo();
         }
 
-        return ($start) ? 0 : 1;
+        $modulo = static::findModulo();
+        return static::$maxValue + $modulo / 2 - static::$maxValue % $modulo;
     }
 
-    protected static function findModulo(int $number): int
+    protected static function findModulo(): int
     {
-        $range = (static::$maxValue - static::$minValue);
+        $range = static::$maxValue - static::$minValue;
         $modulo = 10;
-        while ($range / 10 >= 10) {
-            $range = $range / 10;
+        while ($range / $modulo > 10) {
             $modulo = $modulo * 10;
         }
-
         return $modulo;
     }
 }
