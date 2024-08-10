@@ -174,7 +174,6 @@ class Chart
 
             $rawElement = explode(';', $line);
             $element = [];
-            $prevValue = null;
             foreach ($rawElement as $index => $value) {
                 $value = static::trim($value);
                 if ($index === 0) {
@@ -259,11 +258,15 @@ class Chart
     protected static function findNumber(bool $start = true): int
     {
         if ($start) {
-            return static::$minValue - static::$minValue % static::findModulo();
+            $modulo = static::findModulo();
+            $min = static::$minValue - static::$minValue % $modulo;
+            return ($min === static::$minValue) ? $min - $modulo : $min;
         }
 
         $modulo = static::findModulo();
-        return static::$maxValue + $modulo / 2 - static::$maxValue % $modulo;
+        $addToMax = $modulo / 2 - static::$maxValue % $modulo;
+
+        return static::$maxValue + (($addToMax >= 0) ? $addToMax : $addToMax + $modulo / 2);
     }
 
     protected static function findModulo(): int
